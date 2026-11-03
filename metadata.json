@@ -1,0 +1,6 @@
+{
+  "name": "RozKamai",
+  "description": "Watch-to-Earn rewarded ads mobile platform and backend for the Pakistani market (PKR)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

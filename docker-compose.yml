@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rozkamai_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: rozkamai_db
+      POSTGRES_USER: rozkamai_admin
+      POSTGRES_PASSWORD: rozkamai_secure_pass_2026
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rozkamai_admin -d rozkamai_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rozkamai_network
+
+networks:
+  rozkamai_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

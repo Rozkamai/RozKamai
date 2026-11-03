@@ -1,0 +1,90 @@
+{
+  "info": {
+    "name": "RozKamai Watch-to-Earn PKR API",
+    "description": "Postman Collection for testing authentication, ad sessions, S2S callbacks, and withdrawals.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/v1/auth/register",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone\": \"03001234567\",\n  \"password\": \"UserSecret123!\",\n  \"fullName\": \"Hamza Ali\",\n  \"isAgeVerified\": true,\n  \"deviceFingerprint\": \"demo_android_fingerprint_001\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/v1/auth/login",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone\": \"03001234567\",\n  \"password\": \"UserSecret123!\",\n  \"deviceFingerprint\": \"demo_android_fingerprint_001\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Wallet - Get Balance",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/wallet",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+      }
+    },
+    {
+      "name": "Ads - Create Session",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/v1/ads/session",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"deviceFingerprint\": \"demo_android_fingerprint_001\",\n  \"network\": \"unity\",\n  \"adUnitId\": \"rewarded_video_pkr\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Ads - S2S Callback (Unity Simulation)",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/v1/ads/callback/unity?sid=tx_99999&customData={{sessionNonce}}"
+      }
+    },
+    {
+      "name": "Withdrawals - Request (JazzCash)",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/v1/withdrawals",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amountPkr\": 500,\n  \"paymentMethod\": \"JAZZ_CASH\",\n  \"accountNumber\": \"03001234567\",\n  \"accountTitle\": \"Hamza Ali\"\n}"
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "sessionNonce", "value": "" }
+  ]
+}

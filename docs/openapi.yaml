@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: RozKamai API
+  description: Complete production API for Pakistani Watch-to-Earn (Rewarded Ads) Monetization Platform. Currency in PKR.
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000/api/v1
+    description: Local Development Server
+paths:
+  /health:
+    get:
+      summary: Health & Online-Only Heartbeat Check
+      responses:
+        '200':
+          description: API is healthy and database is connected.
+  /auth/register:
+    post:
+      summary: Register with Pakistani Phone and 18+ declaration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, password, fullName, isAgeVerified, deviceFingerprint]
+              properties:
+                phone:
+                  type: string
+                  example: "03001234567"
+                password:
+                  type: string
+                  example: "UserSecret123!"
+                fullName:
+                  type: string
+                  example: "Hamza Ali"
+                isAgeVerified:
+                  type: boolean
+                  example: true
+                deviceFingerprint:
+                  type: string
+                  example: "android_device_unique_hw_01"
+      responses:
+        '201':
+          description: Account created successfully with initial wallet.
+  /auth/login:
+    post:
+      summary: Login with Phone and Password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, password, deviceFingerprint]
+              properties:
+                phone:
+                  type: string
+                  example: "03001234567"
+                password:
+                  type: string
+                  example: "UserSecret123!"
+                deviceFingerprint:
+                  type: string
+      responses:
+        '200':
+          description: JWT Access and Refresh tokens issued.
+  /wallet:
+    get:
+      summary: Get Wallet Balances and Reconciliation Status
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Returns available, pending, total earned coins & PKR values.
+  /ads/session:
+    post:
+      summary: Initialize Ad Session (Returns custom reward Nonce for SDK)
+      security:
+        - BearerAuth: []
+      responses:
+        '201':
+          description: Session created with nonce and expiry.
+  /ads/callback/{network}:
+    post:
+      summary: S2S Cryptographic Completion Callback from Ad Network
+      parameters:
+        - in: path
+          name: network
+          required: true
+          schema:
+            type: string
+            enum: [unity, applovin]
+      responses:
+        '200':
+          description: Reward split 70% User / 30% Platform credited.
+  /withdrawals:
+    post:
+      summary: Request PKR Withdrawal via JazzCash, EasyPaisa, or Bank Transfer
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amountPkr, paymentMethod, accountNumber, accountTitle]
+              properties:
+                amountPkr:
+                  type: integer
+                  minimum: 500
+                  example: 500
+                paymentMethod:
+                  type: string
+                  enum: [JAZZ_CASH, EASY_PAISA, BANK_TRANSFER]
+                accountNumber:
+                  type: string
+                  example: "03001234567"
+                accountTitle:
+                  type: string
+                  example: "Hamza Ali"
+      responses:
+        '201':
+          description: Withdrawal created in PENDING status; funds locked in wallet.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
